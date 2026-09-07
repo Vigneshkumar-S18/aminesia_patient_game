@@ -1,0 +1,145 @@
+.vault-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.vault-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background-color: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-count {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.vault-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--background);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  width: 300px;
+}
+
+.search-input {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  font-size: var(--text-sm);
+}
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filters .active {
+  background: var(--text-main);
+  color: white;
+  border-color: var(--text-main);
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.memory-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: var(--surface);
+}
+
+.memory-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.memory-emoji {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  background: var(--surface-hover);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 0;
+}
+
+.memory-details h4 {
+  margin: 0 0 0.25rem 0;
+}
+
+.border-top {
+  border-top: 1px solid var(--border);
+}
+
+.pt-3 { padding-top: 0.75rem; }
+
+.prov-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}

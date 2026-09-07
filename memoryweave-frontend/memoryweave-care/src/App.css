@@ -1,0 +1,18 @@
+.page-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: var(--text-2xl);
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}

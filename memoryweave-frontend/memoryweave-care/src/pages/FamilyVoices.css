@@ -1,0 +1,109 @@
+.voices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.voice-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.voice-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.voice-avatar {
+  width: 48px;
+  height: 48px;
+  background: var(--primary-light);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-message {
+  background: var(--surface-hover);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary);
+  font-style: italic;
+}
+
+.voice-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-icontext {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.btn-icontext:hover { color: var(--primary); }
+.btn-icontext.text-danger:hover { color: var(--danger); }
+.ml-auto { margin-left: auto; }
+.mr-2 { margin-right: 0.5rem; }
+.flex-gap { display: flex; gap: 1rem; }
+
+.record-form-card {
+  border: 2px dashed var(--primary);
+  background: #F8FAFC;
+}
+
+.record-action-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.record-btn {
+  width: 80px;
+  height: 80px;
+  background: var(--surface-hover);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all 0.3s;
+}
+
+.record-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.record-btn.recording {
+  background: #FEE2E2;
+  color: var(--danger);
+  border-color: var(--danger);
+  animation: pulse-border 1.5s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.record-form-actions {
+  display: flex;
+  justify-content: space-between;
+}

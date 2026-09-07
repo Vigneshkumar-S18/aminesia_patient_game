@@ -1,0 +1,65 @@
+.welcome-page {
+  padding: 1rem;
+}
+
+.greeting {
+  font-size: var(--text-3xl);
+  color: var(--text-main);
+}
+
+.sun-icon {
+  font-size: 5rem;
+}
+
+.voice-prompt {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--surface);
+  padding: 1.5rem 2rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  max-width: 600px;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.btn-sound {
+  background: var(--primary-light);
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.btn-sound:active {
+  transform: scale(0.95);
+}
+
+.prompt-text {
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.action-buttons {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mb-2 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 2rem; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-muted { color: var(--text-muted); }
+.text-lg { font-size: var(--text-lg); }
+
+.voice-interaction {
+  margin-top: 2rem;
+}
