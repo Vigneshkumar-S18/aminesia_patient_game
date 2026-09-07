@@ -1,0 +1,91 @@
+.journey-intro-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--background);
+}
+
+.intro-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+  padding: 2rem;
+  background: white;
+  border: 2px solid var(--primary-light);
+  border-radius: 2rem;
+  box-shadow: var(--shadow-xl);
+}
+
+.intro-icon {
+  color: var(--primary);
+  margin-bottom: 2rem;
+}
+
+.intro-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 2px;
+  margin: 0 0 1rem 0;
+}
+
+.intro-subtitle {
+  font-size: 1.75rem;
+  color: var(--text-muted);
+  margin: 0 0 2rem 0;
+}
+
+.intro-duration {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--secondary);
+  background: #ECFDF5;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 3rem;
+}
+
+.btn-start-journey {
+  width: 100%;
+  background-color: var(--primary);
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 2rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s;
+  letter-spacing: 1px;
+}
+
+.btn-start-journey:active {
+  transform: scale(0.98);
+}
+
+.btn-listen-intro {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: transparent;
+  color: var(--text-main);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background-color 0.2s;
+}
+
+.btn-listen-intro:active {
+  background-color: var(--surface-hover);
+}

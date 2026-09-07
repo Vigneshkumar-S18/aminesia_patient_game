@@ -1,0 +1,90 @@
+.patient-settings-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 2rem;
+  background-color: var(--background);
+}
+
+.settings-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 3rem;
+}
+
+.settings-list-patient {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  gap: 2rem;
+}
+
+.setting-label {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-main);
+  flex: 1;
+}
+
+.setting-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.setting-value {
+  font-size: 1.75rem;
+  font-weight: 500;
+  min-width: 100px;
+  text-align: center;
+}
+
+.btn-setting-adjust {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--primary);
+  background: white;
+  color: var(--primary);
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.btn-setting-adjust:active {
+  background: var(--primary-light);
+}
+
+.btn-home-return {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: transparent;
+  border: 4px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 1.5rem 3rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-top: 4rem;
+}
+.btn-home-return:active {
+  background: var(--surface-hover);
+}
