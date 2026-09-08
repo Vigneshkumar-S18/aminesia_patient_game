@@ -1,35 +1,63 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Activity, Brain, Bell, AlertTriangle } from 'lucide-react';
+import api from '../api';
 import './Dashboard.css';
 
 export default function Dashboard() {
+  const [analytics, setAnalytics] = useState(null);
+  const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const patientId = "patient_001"; // Hardcoded for demo
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [analyticsRes, alertsRes] = await Promise.all([
+          api.get(`/patients/${patientId}/analytics`),
+          api.get(`/patients/${patientId}/alerts`)
+        ]);
+        setAnalytics(analyticsRes.data);
+        setAlerts(alertsRes.data);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="dashboard page-content">Loading dashboard data...</div>;
+  }
+
   return (
     <div className="dashboard page-content">
       <header className="page-header">
-        <h1>Good morning, Anita</h1>
-        <p className="text-muted text-lg">Here's how Asha is doing today.</p>
+        <h1>Good morning, Caregiver</h1>
+        <p className="text-muted text-lg">Here's how {analytics?.patient_name || 'your loved one'} is doing today.</p>
       </header>
 
       <div className="summary-cards">
         <div className="card summary-card">
           <div className="summary-icon"><Brain className="text-primary" size={24} /></div>
           <div className="summary-details">
-            <span className="summary-label">Memory</span>
-            <span className="summary-value">Stable</span>
+            <span className="summary-label">Completion Rate</span>
+            <span className="summary-value">{Math.round((analytics?.weekly_completion_rate || 0) * 100)}%</span>
           </div>
         </div>
         <div className="card summary-card">
           <div className="summary-icon"><Activity className="text-secondary" size={24} /></div>
           <div className="summary-details">
-            <span className="summary-label">Engagement</span>
-            <span className="summary-value">18 min</span>
+            <span className="summary-label">Avg Session</span>
+            <span className="summary-value">{analytics?.avg_session_duration_minutes || 0} min</span>
           </div>
         </div>
         <div className="card summary-card">
           <div className="summary-icon"><Bell className="text-warning" size={24} /></div>
           <div className="summary-details">
-            <span className="summary-label">Reminders</span>
-            <span className="summary-value">2 / 3</span>
+            <span className="summary-label">Active Alerts</span>
+            <span className="summary-value">{analytics?.recent_alerts_count || 0}</span>
           </div>
         </div>
       </div>
@@ -37,16 +65,19 @@ export default function Dashboard() {
       <div className="dashboard-grid">
         <div className="card chart-card">
           <h3>Engagement & Task Performance</h3>
-          <p className="text-muted text-sm mb-4">Daily cognitive engagement minutes</p>
-          <div className="mock-chart">
-            {/* Simple mock chart visualization */}
-            <div className="chart-bars">
-              <div className="bar-wrapper"><div className="bar" style={{ height: '40%' }}></div><span>Mon</span></div>
-              <div className="bar-wrapper"><div className="bar" style={{ height: '60%' }}></div><span>Tue</span></div>
-              <div className="bar-wrapper"><div className="bar" style={{ height: '80%' }}></div><span>Wed</span></div>
-              <div className="bar-wrapper"><div className="bar" style={{ height: '85%' }}></div><span>Thu</span></div>
-              <div className="bar-wrapper"><div className="bar" style={{ height: '70%' }}></div><span>Fri</span></div>
-              <div className="bar-wrapper"><div className="bar" style={{ height: '90%', background: 'var(--primary)' }}></div><span>Sat</span></div>
+          <p className="text-muted text-sm mb-4">Routine compliance and memory stats</p>
+          <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
+              <span className="text-muted">Routine Compliance</span>
+              <span className="font-medium">{Math.round((analytics?.routine_compliance_percent || 0) * 100)}%</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
+              <span className="text-muted">Total Memories Saved</span>
+              <span className="font-medium">{analytics?.total_memories_count || 0}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
+              <span className="text-muted">Recent Difficulty Level</span>
+              <span className="font-medium">Level {analytics?.recent_difficulty_level || 1}</span>
             </div>
           </div>
         </div>
@@ -54,21 +85,23 @@ export default function Dashboard() {
         <div className="card alert-card">
           <div className="alert-header">
             <AlertTriangle className="text-warning" size={24} />
-            <h3>Routine Insight</h3>
+            <h3>Routine & Alerts</h3>
           </div>
           <div className="alert-content">
-            <p className="text-danger font-medium mb-2">Today's interaction pattern differs from the usual pattern.</p>
-            <div className="routine-comparison">
-              <div className="routine-normal">
-                <span className="text-sm text-muted">Normally:</span>
-                <p>Morning Memory Journey<br/>✓ Completed by 10:30 AM</p>
-              </div>
-              <div className="routine-today mt-3">
-                <span className="text-sm text-muted">Today:</span>
-                <p>Not completed</p>
-              </div>
-            </div>
-            <button className="btn btn-outline mt-4">Check In</button>
+            {alerts.length === 0 ? (
+              <p className="text-muted mt-2">No active alerts at this time. All routines are on track.</p>
+            ) : (
+              alerts.map(alert => (
+                <div key={alert.id} className="mt-3 mb-3 pb-3" style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <p className="text-danger font-medium mb-1">{alert.title}</p>
+                  <p className="text-sm text-muted">{alert.message}</p>
+                  <span className="text-xs text-muted mt-1 block">
+                    Severity: {alert.severity}
+                  </span>
+                </div>
+              ))
+            )}
+            <button className="btn btn-outline mt-4 w-full">View All Alerts</button>
           </div>
         </div>
       </div>

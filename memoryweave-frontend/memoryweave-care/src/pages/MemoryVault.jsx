@@ -1,32 +1,78 @@
-import React from 'react';
-import { Plus, Search, Image as ImageIcon, MapPin, Mic, FileText, User, Calendar, Music } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Search, Image as ImageIcon, MapPin, Mic, FileText, User, Calendar, Check, X } from 'lucide-react';
+import api from '../api';
 import './MemoryVault.css';
 
 export default function MemoryVault() {
+  const [memories, setMemories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newMemory, setNewMemory] = useState({ title: '', description: '', media_url: '', media_type: 'photo' });
+  const [filter, setFilter] = useState('All');
+
+  // Hardcoded patient for MVP
+  const PATIENT_ID = "patient_001";
+
+  useEffect(() => {
+    fetchMemories();
+  }, []);
+
+  const fetchMemories = async () => {
+    try {
+      const response = await api.get(`/patients/${PATIENT_ID}/memories`);
+      setMemories(response.data);
+    } catch (error) {
+      console.error("Failed to fetch memories:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddMemory = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post(`/patients/${PATIENT_ID}/memories`, newMemory);
+      setShowAddModal(false);
+      setNewMemory({ title: '', description: '', media_url: '', media_type: 'photo' });
+      fetchMemories();
+    } catch (error) {
+      console.error("Failed to add memory:", error);
+    }
+  };
+
+  const handleVerify = async (memoryId) => {
+    try {
+      await api.patch(`/patients/${PATIENT_ID}/memories/${memoryId}/verify`);
+      fetchMemories(); // Refresh to get updated status
+    } catch (error) {
+      console.error("Failed to verify memory:", error);
+    }
+  };
+
   const stats = [
-    { label: 'People', count: 12, icon: <User size={18} /> },
-    { label: 'Places', count: 6, icon: <MapPin size={18} /> },
-    { label: 'Events', count: 8, icon: <Calendar size={18} /> },
-    { label: 'Stories', count: 14, icon: <FileText size={18} /> },
-    { label: 'Voices', count: 5, icon: <Mic size={18} /> },
-    { label: 'Objects', count: 9, icon: <ImageIcon size={18} /> },
+    { label: 'Total Memories', count: memories.length, icon: <FileText size={18} /> },
+    { label: 'Verified', count: memories.filter(m => m.verified).length, icon: <Check size={18} /> },
+    { label: 'Needs Verification', count: memories.filter(m => !m.verified).length, icon: <Search size={18} /> },
   ];
 
-  const recentMemories = [
-    { id: 1, title: 'Family', type: 'Person', emoji: '👨', date: '7 Sep 2026', verified: true },
-    { id: 2, title: 'Home', type: 'Place', emoji: '🏡', date: '6 Sep 2026', verified: true },
-    { id: 3, title: 'Village', type: 'Place', emoji: '🌾', date: '5 Sep 2026', verified: true },
-    { id: 4, title: 'Diwali 1998', type: 'Event', emoji: '🎆', date: '1 Sep 2026', verified: true },
-  ];
+  const filteredMemories = filter === 'All' 
+    ? memories 
+    : filter === 'Needs Verification' 
+      ? memories.filter(m => !m.verified)
+      : memories.filter(m => m.verified);
+
+  if (loading) {
+    return <div className="p-8">Loading Memory Vault...</div>;
+  }
 
   return (
     <div className="memory-vault page-content">
       <header className="page-header vault-header">
         <div>
           <h1>Memory Vault</h1>
-          <p className="text-muted text-lg">Manage Asha's personalized memory world.</p>
+          <p className="text-muted text-lg">Manage personalized memories and verify AI-extracted entities.</p>
         </div>
-        <button className="btn btn-primary btn-add-memory">
+        <button className="btn btn-primary btn-add-memory" onClick={() => setShowAddModal(true)}>
           <Plus size={20} /> Add Memory
         </button>
       </header>
@@ -50,34 +96,98 @@ export default function MemoryVault() {
             <input type="text" placeholder="Search memories..." className="search-input" />
           </div>
           <div className="filters">
-            <button className="btn btn-outline active">All</button>
-            <button className="btn btn-outline">People</button>
-            <button className="btn btn-outline">Places</button>
+            <button className={`btn btn-outline ${filter === 'All' ? 'active' : ''}`} onClick={() => setFilter('All')}>All</button>
+            <button className={`btn btn-outline ${filter === 'Verified' ? 'active' : ''}`} onClick={() => setFilter('Verified')}>Verified</button>
+            <button className={`btn btn-outline ${filter === 'Needs Verification' ? 'active' : ''}`} onClick={() => setFilter('Needs Verification')}>Needs Verification</button>
           </div>
         </div>
 
-        <div className="memory-grid mt-4">
-          {recentMemories.map(memory => (
-            <div key={memory.id} className="memory-card">
-              <div className="memory-emoji">{memory.emoji}</div>
-              <div className="memory-details">
-                <h4>{memory.title}</h4>
-                <span className="text-sm text-muted">{memory.type}</span>
-              </div>
-              <div className="memory-provenance mt-3 pt-3 border-top">
-                <div className="prov-row">
-                  <span className="text-xs text-muted">Added:</span>
-                  <span className="text-xs font-medium">{memory.date}</span>
+        {filteredMemories.length === 0 ? (
+          <div className="text-center p-8 text-muted">No memories found. Click "Add Memory" to ingest data.</div>
+        ) : (
+          <div className="memory-grid mt-4">
+            {filteredMemories.map(memory => (
+              <div key={memory.id} className={`memory-card ${!memory.verified ? 'unverified-card' : ''}`}>
+                {memory.media_url ? (
+                  <div className="memory-image" style={{ backgroundImage: `url(${memory.media_url})`, height: '120px', backgroundSize: 'cover', borderRadius: '8px' }}></div>
+                ) : (
+                  <div className="memory-emoji" style={{ fontSize: '3rem', textAlign: 'center', margin: '20px 0' }}>📝</div>
+                )}
+                <div className="memory-details">
+                  <h4>{memory.title}</h4>
+                  <p className="text-sm text-muted mt-1">{memory.description}</p>
                 </div>
-                <div className="prov-row">
-                  <span className="text-xs text-muted">Status:</span>
-                  <span className="text-xs text-secondary font-medium">✓ Verified</span>
+                <div className="memory-provenance mt-3 pt-3 border-top">
+                  <div className="prov-row">
+                    <span className="text-xs text-muted">Added:</span>
+                    <span className="text-xs font-medium">{new Date(memory.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <div className="prov-row mt-2">
+                    <span className="text-xs text-muted">Status:</span>
+                    {memory.verified ? (
+                      <span className="text-xs text-secondary font-medium">✓ Verified</span>
+                    ) : (
+                      <button className="btn btn-sm btn-primary" onClick={() => handleVerify(memory.id)}>Approve AI Extraction</button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {showAddModal && (
+        <div className="modal-backdrop">
+          <div className="modal card" style={{ maxWidth: '500px', width: '100%' }}>
+            <div className="modal-header d-flex justify-content-between">
+              <h3>Ingest New Memory</h3>
+              <button className="btn-icon" onClick={() => setShowAddModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleAddMemory} className="modal-body p-4">
+              <div className="form-group mb-3">
+                <label>Memory Title</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={newMemory.title}
+                  onChange={(e) => setNewMemory({...newMemory, title: e.target.value})}
+                  required 
+                  placeholder="e.g., Daughter's Wedding"
+                  style={{ width: '100%', padding: '8px' }}
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label>Story/Description (Used by AI to extract entities)</label>
+                <textarea 
+                  className="form-control" 
+                  value={newMemory.description}
+                  onChange={(e) => setNewMemory({...newMemory, description: e.target.value})}
+                  required 
+                  rows="3"
+                  placeholder="Tell the story... e.g., Asha attended Priya's wedding at the village home."
+                  style={{ width: '100%', padding: '8px' }}
+                ></textarea>
+              </div>
+              <div className="form-group mb-4">
+                <label>Media URL (Photo/Audio)</label>
+                <input 
+                  type="url" 
+                  className="form-control" 
+                  value={newMemory.media_url}
+                  onChange={(e) => setNewMemory({...newMemory, media_url: e.target.value})}
+                  placeholder="https://example.com/photo.jpg"
+                  style={{ width: '100%', padding: '8px' }}
+                />
+              </div>
+              <div className="form-actions text-right mt-4" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                <button type="button" className="btn btn-outline" onClick={() => setShowAddModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Save & Extract</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
